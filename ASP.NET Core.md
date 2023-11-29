@@ -20,13 +20,15 @@ If you press refresh, you'll see the request. Click on the request and see the d
 Click on the Http Response and you can see the object sent from the server to the browser.
 
 ## Kestrel and other servers
-Kestrel is the default http server for asp.net core apps. Normally this is only used in dev. In prod we'll use reverse proxy servers as IIS, Nginx or Apache. These will receive the request and perform load balancing, url rewriting, authentication, caching, decompressing requests, decryption of sssl certificates,etc and only then transfer the request to the Kestrel server. In dev we can simulate the proxy server by using the IIS express (only on windows). When we run the project we can see a window of the cmd opening. That's the kestrel server instance. These will appear on the top with the play button.
+Kestrel is the default http server for asp.net core apps. Normally this is only used in dev. In prod we'll use reverse proxy servers as IIS, Nginx or Apache. These will receive the request and perform load balancing, url rewriting, authentication, caching, decompressing requests, decryption of ssl certificates,etc and only then transfer the request to the Kestrel server. In dev we can simulate the proxy server by using the IIS express (only on windows). When we run the project we can see a window of the cmd opening. That's the kestrel server instance. These will appear on the top with the play button.
 
 ## launchSettings.json
 It's inside the Properties folder. There we can find the various launch profiles. A profile is a collection of settings which enables a particular server to run the application when we start the project. 
 * "dotnetRunMessages" activates showing the changes resulting from dotnet cli command.
 * "applicationUrl" shows the url and port. Ports must be between 1024 and 65536.
 * "environmentVariables" global values that are available across the entire application
+
+<br><br>
 
 # Http
 ## Http Response Object
@@ -172,7 +174,9 @@ Example with a query string sent in a body=raw by postman "firstName=scott&age=2
                 }
         });     
 
-        * - here there's a possibility that the query can bring duplicate keys, and in this way we agglomerate the potential different values to the same key.        
+\* here there's a possibility that the query can bring duplicate keys, and in this way we agglomerate the potential different values to the same key.        
+
+<br><br>
 
 # Middlewares
 Component that is assembled into the app pipeline to handle requests and responses. They're chained one after the other and execute in the same sequence how they're added.
@@ -303,12 +307,14 @@ We have to pass 2 args: the condition that returns true or false and the middlew
                                 await next(context);
                         });
                 }
-                );
+        );
         //This runs always
         app.Run( async (context) => 
         {
                 await context.Response.WriteAsync("Hello from main chain");
         });
+
+<br><br>
 
 # Routing
 Process through which the app matches the requested url path and executes the related controller and Action.
@@ -364,11 +370,10 @@ After the app.UseRouting(); executes, he has selected the current request endpoi
         app.Run();
 
 ## Route params
-
-//url literal
+url literal <br>
 http://localhost:1337/Home/Index
 
-//url with route params
+url with route params <br>
 http://localhost:1337/{Controller}/{Action}/{id}
 
 {Controller} => this param will be replaced by the controller name <br>
@@ -415,11 +420,11 @@ We can have constraints in length:
 * maxlength(value)
 * length(min,max)
 
-ex: // an arg passed of employeeName that is min 3 chars and max of 7 and defaults to Luis in case of not passed
+ex: // an arg passed of employeeName that is min 3 chars and max of 7 and defaults to John in case of not passed
 
         app.UseEndpoints( endpoints => 
         {
-                endpoints.Map("employee/profile/{employeeName:length(3,7)=luis}", async context => {
+                endpoints.Map("employee/profile/{employeeName:length(3,7)=john}", async context => {
                         context.Response.WriteAsync("Something");
                 });
         });
@@ -427,11 +432,11 @@ ex: // an arg passed of employeeName that is min 3 chars and max of 7 and defaul
 We can have constraints of range of chars:
 * min()
 * max()
-* range(min,max) // {age:18,120}
-* alpha  // {username:alpha} Matches with a string that contains only (A-Z) and (a-z)
-* regex  // {age:regex(^[0-9]{2}$)}
+* range(min,max) => {age:18,120}
+* alpha  => {username:alpha} Matches with a string that contains only (A-Z) and (a-z)
+* regex  => {age:regex(^[0-9]{2}$)}
 
-ex: // an arg passed of sales report that takes in the year and next only quarterly months like sales-report/2030/apr
+ex: an arg passed of sales report that takes in the year and next only quarterly months like sales-report/2030/apr
 
         app.UseEndpoints( endpoints => 
         {
@@ -521,6 +526,8 @@ add the statement in program.cs
 
 and now on the browser we can access it directory via url.
 
+<br><br>
+
 # Controllers
 Used to group a set of actions(or action methods) 
 Invokes the action based on the route and fetches data from the model to render on the view.
@@ -587,7 +594,6 @@ Type of action result
         {
                 return new ContentResult()
                 {       
-                        
                         Content = "Hello", //body of response
                         ContentType = "text/plain"  //header of the response
                 }
@@ -739,8 +745,7 @@ In case of x-www-form-urlencoded, it will send it through query string in the bo
 On a post request, sends the data in the body. We have to explicitly add the attribute [FromBody] to inform the model binding.
 
         public IActionResult Index([FromBody] Person person)
-        {
-        }
+        {}
 
 To send the post request, we can select raw to send Json or xml.
 
@@ -887,7 +892,6 @@ We'll need to override the IsValid method of the ValidationAttribute class.
         [DateRangeValidator(nameOf(FromDate), ErrorMessage="Should be older than or equal to ToDate")]
         public DateTime? ToDate {get;set}
 
-
         //on the newly created validator class
         public class DateRangeValidatorAttribute: ValidationAttribute
         {
@@ -938,8 +942,7 @@ Extend the IValidatable interface and implement it's method Validate.
 Specifies that only the attributes specified should be included in the model binding. Discards all the others that were submitted in the request. Prevents overposting unwanted props.
 
         public IActionResult Index([Bind(nameof(Person.PersonName), nameof(Person.Email))]Person person)
-        {
-        }
+        {}
 
 If you have just some props you don't want to include:
 
@@ -950,7 +953,7 @@ If you have just some props you don't want to include:
         }
 
 ## Custom Model Binding
-Whenever the object is too complex to the default model binder
+Whenever the object is too complex to the default model binder.
 Extend IModelBinder that implements BindModelAsync.
 In the example we want to create a custom model binder that joins firsName and lastName props as a person.PersonName
 
@@ -1013,6 +1016,8 @@ To be able to receive a collection in the request body, the default model binder
         Tags[0] => "#dotnet"
         Tags[1] => "#python"
 
+<br><br>
+
 # Views
 It's the UI. Contains the markup(Razor Syntax). Renders the model data passed by a controller. We can write C# in the view thanks to the razor engine. The typical view is strongly typed, with its type being stated in the top line of its code as @model IEnumerable\<Item>. If a ViewBag is introduced, then it becomes weakly typed.(more than 1 type)
 To continue with more than 1 type var but still maintaining the strongly type view, we use viewModels.
@@ -1021,7 +1026,7 @@ To enable the controllers and views as a service we must add in the program.cs
         builder.Services.AddControllersWithViews();
 
 So they are instantiated whenever we send a request.
-And to return a view, inside the controller
+And to return a view, inside the controller.
 
         public IActionResult Index()
         {
@@ -1094,14 +1099,12 @@ We can add multiple code blocks or expressions inside the view file
         //To create a local function
         @{
                 return_type MethodName(arguments)
-                {
-                }
+                {}
         }
         //To create a method
         @functions{
                 return_type MethodName(arguments)
-                {
-                }
+                {}
         }
         //To call it
         <span>@GetAge(person.DateOfBirth)</span>
@@ -1162,8 +1165,7 @@ It's bound to a model class. Allows direct access to a prop of the model class.
 
         //To call it (Model with a capital M because it's a property)
         @foreach (Person person in Model)
-        {
-        }
+        {}
 
 ## ViewModel - Strongly typed views with multiple models
 We create a class with 2 or more types. <br>
@@ -1398,9 +1400,13 @@ View components are similar to partial views, but they don't use model binding, 
 * Sidebar content on a blog
 * A sign in panel that would be rendered on every page and show either the links to sign out or sign in, depending on the sign in state of the user
 
+<br>
+
 It consists of two parts:
 1. The class, typically derived from ViewComponent.
 2. The result it returns, typically a view.
+
+<br>
 
 To create a view component:
 1. Create a folder "ViewComponents"
@@ -1478,7 +1484,7 @@ We can also make the view component strongly typed
 While invoking the view component from the parent view, we can pass params through an anonymous object:
 
         //in the invoking parent view
-       @await Component.InvokeAsync("Sample", new { x = 10, y = 20}) 
+        @await Component.InvokeAsync("Sample", new { x = 10, y = 20}) 
 
         //in the view component
         public class GridViewComponent : ViewComponent
@@ -1487,7 +1493,7 @@ While invoking the view component from the parent view, we can pass params throu
         }
 
 ## ViewComponentResult
-We can also return a ViewComponentResult with the same use cases and logic of the PartialViewResult
+We can also return a ViewComponentResult with the same use cases and logic of the PartialViewResult.
 
 1st we have to send the html response with the view, the button and the script to fetch the action response.
 2nd controller must have the action that returns a ComponentViewResult that contains the list.
@@ -1529,14 +1535,16 @@ We can also return a ViewComponentResult with the same use cases and logic of th
         //on the sample partial
         we have the razor with a div foreach list item
 
+<br><br>
+
 # Services
-It should be in a separate class library and each service should follow the naming convention "tableName" + "Service". ex: CitiesService, EmployeesService, etc
+It should be in a separate class library and each service should follow the naming convention "tableName" + "Service". ex: CitiesService, EmployeesService, etc.
 
 The controller (in the individual action methods) calls the service method through a private readonly field of the interface of the service, that is passed in through the ctor of the controller. Inside the action methods, the landed vars are passed in to the Views creating a strongly typed view. In the view we use the @model type to identify the type of the model available in the view.
 
 ## Dependency Inversion Principle
 A higher level module (controller) should not depend on low level modules but both should depend on abstractions (interfaces)
-controller calls methods from the passed in IService and the service class must implement the members defined in its interface
+controller calls methods from the passed in IService and the service class must implement the members defined in its interface.
 
 ## Inversion of Control
 Design Pattern which suggests "IoC container" for implementation of Dependency Inversion Principle.
@@ -1643,6 +1651,8 @@ NOTE - Difference between GetRequiredService and GetService is GetRequiredServic
 5. Storing reference of service instance - Don't hold the reference of a resolved service object as it may cause memory leaks and you may have access to a disposed service object.
 Meaning, keep the fields that land the services private not public.
 
+<br><br>
+
 # Environments
 * Development - dev makes changes in the code, commits code to the source control
 * Staging - the app runs on a server, from which other developers and qa access the app
@@ -1692,6 +1702,8 @@ In powershell, cd into the project's folder. Then:
         set ASPNETCORE_ENVIRONMENT="Staging" => sets the env in normal cmd
         //and then
         dotnet run --no-launch-profile 
+
+<br><br>
 
 # Configuration
 Is the constant key value pairs that are set at a common location and can be read from anywhere in the app. The file is the appsettings.json
@@ -1788,10 +1800,10 @@ In powershell, cd into the project folder.
 1. Create a json file with the desired section and/or entries.(ex:MyCustomConfig.Json)
 2. In program.cs:
 
-    builder.Host.ConfigureAppConfiguration( (hostingContext, config)=>
-    {
-            config.AddJsonFile("MyCustomConfig", optional:true, reloadOnChange: true);
-    });
+        builder.Host.ConfigureAppConfiguration( (hostingContext, config)=>
+        {
+                config.AddJsonFile("MyCustomConfig", optional:true, reloadOnChange: true);
+        });
 
 ## HttpClient
 Class for sending http requests to a http resource and receiving response.
@@ -1853,8 +1865,12 @@ To enable it:
             Dictionary<string,object> responseDictionary = await _myService.MyMethod();
         }
 
+<br><br>
+
 # Countries App
 Starting here the course started to build a project. So the information is extracted from practical examples and may be scattered. 
+
+<br><br>
 
 # Unit Tests with xUnit
 Focused on a single isolated component
@@ -2133,14 +2149,14 @@ On the program.cs add them to the services.Ex:
         builder.Services.AddScoped<ICountriesRepository, CountriesRepository>(); 
         builder.Services.AddScoped<IPersonsRepository, PersonsRepository>(); 
 
-
 ## Mocking the Repository
 While testing the services we must mock the repository (while generating fake repository responses to the service we isolate the service layer)
 While testing the controllers we must mock the services (while generating fake services responses to the controller we isolate the controller layer) 
 So, every time we need to test a layer we must mock the underlying layer.
 
-Mock<\IPersonsRepository> => this is used to mock the methods of IPersonsRepository
-IPersonsRepository => Represents the mocked object that was created by Mock<\T>
+Mock\<IPersonsRepository> => this is used to mock the methods of IPersonsRepository
+
+IPersonsRepository => Represents the mocked object that was created by Mock\<T>
 
 We only mock methods that are being called in the current test case as a part of the service.
 
@@ -2198,7 +2214,7 @@ To introduce model errors on purpose we can do: personsController.ModelState.Add
                         _personsService = _mockPersonsService.Object;        
                         
                         _mockCountriesService = new Mock<ICountriesService>();
-                        _coutriesService = _mockCountriesService.Object;
+                        _countriesService = _mockCountriesService.Object;
 
                         _personsService = new PersonsService(_personsService);
                         _countriesService = new CountriesService(_countriesService);
@@ -2323,6 +2339,8 @@ Ex:
         
         document.QuerySelectorAll("table.persons").Should().NotBeNull();
 
+<br>
+
 # Tag Helpers
 Are the classes that can be invoked as an html tag.
 Before using, we must add on the _ViewImport file @addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
@@ -2380,9 +2398,9 @@ To display a selectItem list, we can pass the list and then for each and make it
 
 or we can use the tag-helper items like so:
 
-                <select asp-for="CountryId" class="form-input" asp-items="@ViewBag.Countries">
-                    <option value="">Please Select</option>
-                </select>
+        <select asp-for="CountryId" class="form-input" asp-items="@ViewBag.Countries">
+                <option value="">Please Select</option>
+        </select>
 
 ## Client Side Validation
 It has 3 steps:
@@ -2457,11 +2475,13 @@ On the controller, inside the post method that the form will be sent, we must ad
                 return View(obj);
         }
 
+<br><br>
+
 # Entity Framework
 Code first approach - suitable for newer dbs
 DbFirst approach - suitable if you have an existing db or developed separately
 
-DbContext - will be bound to a db
+DbContext - will be bound to a db <br>
 DbSet - will be bound to a table
 
         public class CustomDbContext : DbContext
@@ -2511,8 +2531,7 @@ In order to pass those options to the base ctor we must create a ctor in our dbC
         public class DbContextClassName : DbContext
         {
                 public DbContextClassName(DbContextOptions options) : base (options)
-                {
-                }
+                {}
         }
 
 ## Seed Data
@@ -2680,6 +2699,8 @@ In the controller, change the methods signatures to async Task\<IActionResult>
 7. Add seed data.
 8. Add migration
 
+<br><br>
+
 # Generate PDF
 1. Download wkhtmltopdf.exe and save it on the wwwroot/Rotativa folder. 
 2. Instal package rotativa.AspNetCore.
@@ -2709,6 +2730,8 @@ Now, in the view we create a hyperlink to download the pdf.
 On the program.cs, after app object is created:
 
         Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
+
+<br><br>
 
 # Generate CSV
 1. Install package csv helper.
@@ -2797,6 +2820,8 @@ Or we can do it by custom approach: <br>
         //on the view
         <a asp-controller="Persons" asp-action="PersonsCSV">Download as CSV</a>
 
+<br><br>
+
 # Generate Excel File
 1. Install package EPPlus.
 2. In the appsettings add the section EPPlus
@@ -2867,6 +2892,8 @@ Or we can do it by custom approach: <br>
 
         //on the view
         <a asp-controller="Persons" asp-action="PersonsExcel">Download as Excel</a>
+
+<br><br>
 
 # Upload Excel into Db
 1. Install Microsoft.AspNetCore.Http
@@ -2967,6 +2994,8 @@ Or we can do it by custom approach: <br>
         //On the Layout add the hyperlink
         <a asp-controller="Countries" asp-action="UploadFromExcel">Upload Countries</a>
 
+<br><br>
+
 # Logging
 ## Levels:
 * Trace - normally isn't used
@@ -3019,7 +3048,7 @@ By default doesn't record request nor response bodies (intensive data writing)
 To configure to log it (for some needed reason for a specific amount of time):
 
 	builder.Services.AddHttpLogging(options => {
-			options.LoggingFields.//whatever we want to log separated by | if we want multiple fields
+                options.LoggingFields.//whatever we want to log separated by | if we want multiple fields
 	}); 
 
 ## Serilog
@@ -3166,6 +3195,8 @@ Records timing of a piece of source code to run.
                 /all the code that we want to time
         } //stop time
 
+<br><br>
+
 # Filters
 Methods that execute before and after the method execution.They're part of the filter pipeline. The request comes in, it goes through the pipeline, through the routing middleware where the action is selected, then through the endpoint middleware, where the action is executed. Before execution of the action method we have the filter pipeline.
 
@@ -3304,9 +3335,9 @@ Filters can be applied in 3 different scopes
 In program.cs we must define it in the options that are passed:
 
         builder.Services.AddControllersWithViews(options => {
-                        options.Filters.Add<FilterClassName>(); //add by type doesn't allow args
-                        //or
-                        options.Filters.Add(new FilterClassName("myArg1", "myArg2")) //add filter instance to pass arguments
+                options.Filters.Add<FilterClassName>(); //add by type doesn't allow args
+                //or
+                options.Filters.Add(new FilterClassName("myArg1", "myArg2")) //add filter instance to pass arguments
         });
 
 * Controller Class level filter => Applies to all action methods
@@ -3758,6 +3789,8 @@ the program.cs get too lengthy with all the service registrations. To abstract t
         //On the program.cs
 	builder.Services.ConfigureServices(builder.Configuration);
 
+<br><br>
+
 # Exception Handling Middleware
 Should be added before the routing middleware to be able to catch throws from the whole pipeline.
 
@@ -3861,6 +3894,8 @@ Generally created in the context of the home controller
 
 Then create the view with the desired graphics.
 
+<br><br>
+
 # SOLID Principles
 Is a set of 5 design patterns, whose main focus is to create loosely coupled, flexible and maintainable code.
 
@@ -3904,6 +3939,8 @@ Controller => Interface => Service
 		service.ServiceMethod();
 	}
 
+<br><br>
+
 # Clean Architecture
 
 src (solution folder)
@@ -3940,6 +3977,8 @@ tests (solution folder)
 	ContactsManager.ServiceTests (xUnit test project) //add ref to Core
 	ContactsManager.ControllerTests (xUnit test project) //add ref to UI
 	ContactsManager.IntegrationTests (xUnit test project) //add ref to UI
+
+<br><br>
 
 # Identity
 It's the api to create and manage users and user account related data in an the application. 
@@ -4677,7 +4716,6 @@ If we want instead to apply it to the whole application, we can do it while conf
         services.AddAntiforgery(opt =>{
                 opt.Cookie.Name = "XSRF-Cookie-TOKEN"; //Can have any name
                 opt.HeaderName = "X-XSRF-TOKEN"; //Can have any name
-
         });
 
 3. On the AccountsController on the ctor inject the signInManager and the IAntiforgery interface
@@ -4737,6 +4775,8 @@ If we want instead to apply it to the whole application, we can do it while conf
 6. Create DTOs for registering and login in.
 7. In case of MVC create the views with the forms.
 
+<br><br>
+
 # Web API
 Used to create http based restful services. REST (representational state transfer)
 
@@ -4773,7 +4813,8 @@ Add the connection string to the appsettings file. When all done, add-migration 
         }
 
 ## Problem Details
-return Problem(detail: "Invalid CityId", statusCode: 400, title: "City Search");
+
+        return Problem(detail: "Invalid CityId", statusCode: 400, title: "City Search");
 
 ## Validation Problem Details
 In case of modelState failed validation, and if we decorate the post method with [ApiController] attribute tag, we send automatically a validation problem details response object. In this object we include a prop "Errors" that includes every error of the model state.
@@ -4803,6 +4844,8 @@ In every api controller we'll have to inherit from ControllerBase and add the at
         public class CustomControllerBase : ControllerBase
         {
         }
+
+<br><br>
 
 # Swagger / OpenApi
 Helps devs to generate interactive UI to document, test restful services.
@@ -4909,15 +4952,13 @@ We can specify a default in case the query isn't passed:
         [Route("api/v{versions:apiVersion}/[controller]")]
         [ApiController]
         public class CustomControllerBase : ControllerBase
-        {
-        }
+        {}
 
 4. On a controller level we add the apiversion attribute:
 
         [ApiVersion("1.0")]
         public class HomeController : CustomControllerBase
-        {
-        }
+        {}
 
 5. On the services registration we have to add documentation generation for every api version. Go to the addSwaggerGen statement and add:
 
@@ -4946,6 +4987,8 @@ We can specify a default in case the query isn't passed:
                 options.SwaggerEndpoint("/swagger/v2/swagger.json", "2.0")
                 ...
         });
+
+<br><br>
 
 # Angular & CORS
 ## Allow CORS
@@ -5019,6 +5062,8 @@ On the methods/controllers we want to apply it
         [ApiVersion("1.0")]
         [EnableCors("4100Client)]
         public HomeController: CustomControllerBase
+
+<br><br>
 
 # JWT & Web API Authentication
 ## Register Endpoint (Endpoint to work with angular)
@@ -5267,29 +5312,31 @@ Used to verify the message wasn't changed along the way. Its signed using a secr
         }
 
 5. On the controller, in the register and login methods, we must include the call to generate this authenticationResponse with the token inside:
-                          
-                        //on the controller we must inject the service and inject it on the ctor
-                        private readonly IJwtService _jwtService;
+                
+        //on the controller we must inject the service and inject it on the ctor
+        private readonly IJwtService _jwtService;
 
-                        //on the register method:
-                        ...
-                        if(!result.Succeeded)
-                        {
-                                string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
-                                return Problem(errorMessage);
-                        }
-                        await _signInManager.SignInAsync(user, isPersistent = false);
+        //on the register method:
+        ...
+        if(!result.Succeeded)
+        {
+                string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
+                return Problem(errorMessage);
+        }
+        await _signInManager.SignInAsync(user, isPersistent = false);
 
-                        var authenticationResponse = _jwtService.CreateJwtToken(user);
-                        return Ok(authenticationResponse);
+        var authenticationResponse = _jwtService.CreateJwtToken(user);
+        return Ok(authenticationResponse);
 
-                        //on the login add the same 2 lines
-                        var authenticationResponse = _jwtService.CreateJwtToken(user);
-                        return Ok(authenticationResponse);
+        //on the login add the same 2 lines
+        var authenticationResponse = _jwtService.CreateJwtToken(user);
+        return Ok(authenticationResponse);
 
 6. And for that service to be available we must register it in the service registration
 
         services.AddTransient<IJwtService, JwtService>();
+
+<br>
 
 In summary the token has the following parts:
 1. Expiration
@@ -5337,12 +5384,13 @@ In the program.cs in the addControllers:
         options.Filters.Add(new AuthorizeFilter(policy));
 
 ## Refresh Token Generation
-
-process:
+Process:
 1. User gets logged in
 2. Server generates 2 tokens, 1 regular and 1 refresh token
 3. When the regular jwt expires, client submits expired jwt token and refresh token in the request header
 4. The server validates both tokens, it generates a new regular jwt token and another refresh token.
+
+Implementation:
 
 1. To implement refresh tokens we first go to appsettings and add a new group:
 
@@ -5560,6 +5608,7 @@ We need: a new instance of a token handler, a var to store the key, the tokenDes
 
 7. On the controllers or individual methods that we want to enforce the login, we must add the annotation [authorize]
 
+<br><br>
 
 # Minimal API
 It's a microsoft api that's used to create http services with minimal dependencies.
@@ -5593,8 +5642,8 @@ Enter project name, and click next. Select .NET7 and then create.
 Like a controller in the way that it groups endpoints
 var mapGroup = app.MapGroup("/route-prefix");
 
-mapGroup.MapGet(...);
-mapGroup.MapPost(...);
+        mapGroup.MapGet(...);
+        mapGroup.MapPost(...);
 
 MapGroup as extension method. We can add all our endpoints to a static class and then creating an extension of route builder, like so:
 
@@ -5609,7 +5658,6 @@ MapGroup as extension method. We can add all our endpoints to a static class and
 
         //on program.cs
         app.MapGroup("/products").ProductsApi();
-
         app.Run();
 
 ## CRUD Methods
